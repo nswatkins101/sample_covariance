@@ -1,0 +1,88 @@
+1          /* cap input rows for the captured run */
+2          options obs=100;
+NOTE: Option OBS changed to 100.
+3
+4          * a macro to generate the simulation data such that the covariance structure is as given;
+5          %macro simulate(num_samples, sample_size, dim, dist);
+6          	* generate a sample of size sample_size in d variables;
+7          	* calculate the standard deviation of the distribution;
+8          	data test_sample;
+9          		do n=1 to 10000;
+10         			* generate a random variable from the distribution;
+11         			x=rand(&dist.);
+12         			output;
+13         		end;
+14         	run;
+15         	proc sql;
+16         		select std(x)
+17         			into :std_dev
+18         		from test_sample;
+19         	quit;
+20
+21
+22         	data samples (drop=d);
+23         		do sampleid=1 to &num_samples;
+24         			do n=1 to &sample_size;
+25         				do d=1 to &dim;
+26         					* generate a random variable from the distribution;
+27         					x=rand(&dist.)/&std_dev.;
+28         					output;
+29         				end;
+30         			end;
+31         		end;
+32         	run;
+33
+34         	proc transpose data=samples out=samples_trans (drop=_NAME_) prefix=x;
+35         		by sampleid n;
+36         	run;
+37
+38         	* plot sample using 2d scatterplot;
+39
+40         	proc sgplot data=samples_trans (where=(sampleid=1));
+41         		scatter y=x2 x=x1;
+42         		title "Sample with n=&sample_size from &dist distribution";
+43         	run;
+44
+45         	* rename dataset;
+46         	data corr_data (drop=x:);
+47         		set samples_trans;
+48         		%do i=1 %to &dim;
+49         			y&i. = x&i.;
+50         		%end;
+51         	run;
+52
+53         %mend simulate;
+54
+55         %simulate(10, 20, 2, 'lognormal');
+NOTE: DATA WORK.TEST_SAMPLE
+
+
+NOTE: The data set WORK.TEST_SAMPLE has 100 observations and 2 variables.
+NOTE: DATA elapsed:
+  wall  0.01 seconds
+  cpu   0.01 seconds
+NOTE: PROC SQL 
+
+NOTE: PROC SQL statement used.
+NOTE: DATA WORK.SAMPLES
+
+
+NOTE: The data set WORK.SAMPLES has 100 observations and 3 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC TRANSPOSE data=WORK.SAMPLES
+
+NOTE: The data set WORK.SAMPLES_TRANS has 50 observations and 4 variables.
+NOTE: PROC SGPLOT data=WORK.SAMPLES_TRANS
+
+NOTE: PROC SGPLOT output written to: ./ods_output/sgplot.svg
+NOTE: DATA WORK.CORR_DATA
+
+
+NOTE: There were 50 observations read from the data set WORK.SAMPLES_TRANS.
+NOTE: The data set WORK.CORR_DATA has 50 observations and 4 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+

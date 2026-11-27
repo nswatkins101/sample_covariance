@@ -1,0 +1,7 @@
+{
+  "bundle": "t001_macro_simulate",
+  "source_file": "project updated.sas",
+  "source_blob_sha": "e4ea0cf058cd798d7704cc9d0c8e705388ee0f99",
+  "source_commit": "1b03df7ffb2fb5fe55cebf5a560128bbd07ac454",
+  "notes": "The simulate macro (lines 54-103) verbatim plus the author's own test call %simulate(10, 20, 2, 'lognormal'); no data needed, only options obs=100 in autoexec."
+}

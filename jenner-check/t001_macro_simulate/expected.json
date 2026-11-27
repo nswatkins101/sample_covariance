@@ -1,0 +1,18 @@
+{
+  "_captured_at": "2026-11-27T16:43:48.211003Z",
+  "_captured_run_id": "r_7e1da5f93df246d9a0c928305bedeeda",
+  "status": "ok",
+  "exit_code": 0,
+  "log_contains": [
+    "The data set WORK.SAMPLES_TRANS has 50 observations and 4 variables.",
+    "The data set WORK.CORR_DATA has 50 observations and 4 variables."
+  ],
+  "log_does_not_contain": [
+    "ERROR:",
+    "[JENNER-ERROR"
+  ],
+  "diagnostics": {
+    "parse_warnings": [],
+    "runtime_warnings": []
+  }
+}
